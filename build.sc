@@ -118,7 +118,15 @@ object example extends Module {
 
   object jvm extends ScalaModule {
     def scalaVersion = V.scala212
-    override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps
+    override def sources: Sources = T.sources(
+      millSourcePath / 'src,
+      millSourcePath / 'shared
+    )
+    override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps ++ Agg(
+      D.configAnnotation,
+      D.akka.http,
+      D.akka.stream
+    )
     override def moduleDeps = Seq(build.jvm(V.scala212))
     override def scalacPluginIvyDeps = Agg(D.macroParadise)
     override def scalacOptions = T {
@@ -142,6 +150,10 @@ object example extends Module {
   object js extends ScalaJSModule {
     def scalaVersion = V.scala212
     def scalaJSVersion = V.scalaJs
+    override def sources: Sources = T.sources(
+      millSourcePath / 'src,
+      millSourcePath / 'shared
+    )
     override def moduleDeps = Seq(build.js(V.scala212))
     override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps
     override def scalacOptions: Target[Seq[String]] = T {
