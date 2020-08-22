@@ -6,3 +6,4 @@ tags
 .idea
 out
 .idea_modules
+example/jvm/resources/application.conf

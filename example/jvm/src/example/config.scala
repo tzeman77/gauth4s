@@ -9,4 +9,8 @@ import com.wacai.config.annotation.conf
     val interface = "localhost"
   }
 
+  val gauth = new {
+    val clientId = "foobar"
+    val platformJs = "https://apis.google.com/js/platform.js"
+  }
 }
