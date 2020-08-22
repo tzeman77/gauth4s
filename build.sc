@@ -1,3 +1,14 @@
+/*
+ * REPL:
+ *
+ * ./mill --repl -w
+ *
+ * Generate Idea project:
+ *
+ * ./mill mill.scalalib.GenIdea/idea
+ *
+ */ 
+
 import mill._
 import mill.api.Loose
 import mill.define.{Command, Sources, Target}
