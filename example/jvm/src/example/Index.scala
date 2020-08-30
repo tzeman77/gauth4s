@@ -64,8 +64,9 @@ object Index extends config with Urls {
           |  });
           |}
           |""".stripMargin),
-      script(src:=s"${gauth.platformJs}?onload=renderButton",
-        attr("async").empty, defer)
+      script(src:=s"${gauth.platformJs}?onload=renderButton"),
+      script(tpe:="text/javascript", src:=s"/$jsBundle"),
+      script(raw("initExample();"))
     )
   )
 }

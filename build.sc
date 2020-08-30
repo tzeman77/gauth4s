@@ -31,6 +31,7 @@ object D {
   val configAnnotation = ivy"com.wacai::config-annotation:0.3.7"
   val googleApiClient = ivy"com.google.api-client:google-api-client:1.30.10"
   val macroParadise = ivy"org.scalamacros:::paradise:2.1.1"
+  val scalaJsDom = ivy"org.scala-js::scalajs-dom::1.0.0"
   val scalatags = ivy"com.lihaoyi::scalatags:0.9.1"
 
   object akka {
@@ -120,7 +121,7 @@ def publishM2Local(p: os.Path): Command[Unit] = T.command{
 
 object example extends Module {
 
-  private val jsInit = "initExapmple"
+  private val jsInit = "initExample"
   private val jsName = "example.js"
   private val resourceDir = "public"
   private val commonDeps = Agg(
@@ -166,7 +167,9 @@ object example extends Module {
       millSourcePath / 'shared
     )
     override def moduleDeps = Seq(build.js(V.scala212))
-    override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps
+    override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps ++ Agg(
+      D.scalaJsDom
+    )
     override def scalacOptions: Target[Seq[String]] = T {
       super.scalacOptions.map(_ ++ Seq("-P:scalajs:sjsDefinedByDefault"))
     }
