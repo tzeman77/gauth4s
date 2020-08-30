@@ -14,6 +14,7 @@ object Index extends config with Urls {
   }
 
   lazy val domId = "my-signin2"
+  val resultId = "result";
 
   def render: String = "<!DOCTYPE html>" + html(
     all.head(
@@ -25,19 +26,28 @@ object Index extends config with Urls {
     body(margin:="5em",
       h1("Google authentication example"),
       div(id:=domId),
+      pre(id:=resultId),
       script(
         s"""
           |function onSuccess(googleUser) {
           |  console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-          |    var profile = googleUser.getBasicProfile();
-          |    var id_token = googleUser.getAuthResponse().id_token;
-          |    console.log('ID: ' + profile.getId());
-          |    console.log('Full Name: ' + profile.getName());
-          |    console.log('Given Name: ' + profile.getGivenName());
-          |    console.log('Family Name: ' + profile.getFamilyName());
-          |    console.log('Image URL: ' + profile.getImageUrl());
-          |    console.log('Email: ' + profile.getEmail());
-          |    console.log('id_token: ' + id_token);
+          |  var profile = googleUser.getBasicProfile();
+          |  var id_token = googleUser.getAuthResponse().id_token;
+          |  console.log('ID: ' + profile.getId());
+          |  console.log('Full Name: ' + profile.getName());
+          |  console.log('Given Name: ' + profile.getGivenName());
+          |  console.log('Family Name: ' + profile.getFamilyName());
+          |  console.log('Image URL: ' + profile.getImageUrl());
+          |  console.log('Email: ' + profile.getEmail());
+          |  console.log('id_token: ' + id_token);
+          |  var xhr = new XMLHttpRequest();
+          |  xhr.open('POST', '$VERIFY');
+          |  xhr.setRequestHeader('Content-Type', 'text/plain');
+          |  xhr.onload = function() {
+          |    console.log('Response: ' + xhr.responseText);
+          |    document.getElementById('$resultId').innerHTML = xhr.responseText;
+          |  };
+          |  xhr.send(id_token);
           |}
           |function onFailure(error) {
           |  console.log(error);
