@@ -2,14 +2,11 @@ package example
 
 import java.util.Collections
 
-import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
-import scalatags.Text.all._
-import scalatags.Text.{all, tags2}
 
 object Verifier extends config with Urls {
 
@@ -44,6 +41,16 @@ object Verifier extends config with Urls {
          |given name: $givenName
          |locale: $locale
          |hosted domain: $hd
+         |
+         |aud: ${payload.getAudienceAsList.toArray mkString ", "}
+         |auth: ${payload.getAuthorizationTimeSeconds}
+         |auth party: ${payload.getAuthorizedParty}
+         |exp: ${payload.getExpirationTimeSeconds}
+         |issued at: ${payload.getIssuedAtTimeSeconds}
+         |issuer: ${payload.getIssuer}
+         |jwtId: ${payload.getJwtId}
+         |not before: ${payload.getNotBeforeTimeSeconds}
+         |type: ${payload.getType}
          |""".stripMargin
     }
 
