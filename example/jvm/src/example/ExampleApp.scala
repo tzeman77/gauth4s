@@ -17,7 +17,8 @@ object ExampleApp extends App with Server with config with Urls {
 
   Http().bindAndHandle(
       assets ~ resources ~
-      Index.route
+        Verifier.route ~
+        Index.route
   , server.interface, server.port)
 
 }
