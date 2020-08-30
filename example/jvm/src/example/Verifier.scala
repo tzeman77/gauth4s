@@ -35,12 +35,15 @@ object Verifier extends config with Urls {
       val familyName = payload.get("family_name")
       val givenName = payload.get("given_name")
       val locale = payload.get("locale")
+      val hd = payload.getHostedDomain
       s"""
          |userId: $userId
          |email: $email, verified: $emailVerified
          |name: $name
          |family name: $familyName
          |given name: $givenName
+         |locale: $locale
+         |hosted domain: $hd
          |""".stripMargin
     }
 
