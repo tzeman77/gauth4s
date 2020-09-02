@@ -32,7 +32,7 @@ object D {
   val googleApiClient = ivy"com.google.api-client:google-api-client:1.30.10"
   val macroParadise = ivy"org.scalamacros:::paradise:2.1.1"
   val scalaJsDom = ivy"org.scala-js::scalajs-dom::1.0.0"
-  val scalatags = ivy"com.lihaoyi::scalatags:0.9.1"
+  val scalatags = ivy"com.lihaoyi::scalatags::0.9.1"
 
   object akka {
     val http = ivy"com.typesafe.akka::akka-http:10.1.12"

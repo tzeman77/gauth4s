@@ -13,60 +13,21 @@ object Index extends config with Urls {
       entity = HttpEntity(ContentTypes.`text/html(UTF-8)`, render)))
   }
 
-  lazy val domId = "my-signin2"
+  val domId = "main"
   val resultId = "result";
 
   def render: String = "<!DOCTYPE html>" + html(
     all.head(
       meta(charset:="utf-8"),
       meta(name:="viewport", content:="width=device-width, initial-scale=1.0"),
-      meta(name:="google-signin-client_id", content:=gauth.clientId),
       tags2.title("Google authentication example")
     ),
     body(margin:="5em",
       h1("Google authentication example"),
       div(id:=domId),
-      pre(id:=resultId),
-      script(
-        s"""
-          |function onSuccess(googleUser) {
-          |  console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-          |  var profile = googleUser.getBasicProfile();
-          |  var id_token = googleUser.getAuthResponse().id_token;
-          |  console.log('ID: ' + profile.getId());
-          |  console.log('Full Name: ' + profile.getName());
-          |  console.log('Given Name: ' + profile.getGivenName());
-          |  console.log('Family Name: ' + profile.getFamilyName());
-          |  console.log('Image URL: ' + profile.getImageUrl());
-          |  console.log('Email: ' + profile.getEmail());
-          |  console.log('id_token: ' + id_token);
-          |  var xhr = new XMLHttpRequest();
-          |  xhr.open('POST', '$VERIFY');
-          |  xhr.setRequestHeader('Content-Type', 'text/plain');
-          |  xhr.onload = function() {
-          |    console.log('Response: ' + xhr.responseText);
-          |    document.getElementById('$resultId').innerHTML = xhr.responseText;
-          |  };
-          |  xhr.send(id_token);
-          |}
-          |function onFailure(error) {
-          |  console.log(error);
-          |}
-          |function renderButton() {
-          |  gapi.signin2.render('$domId', {
-          |    'scope': 'profile email',
-          |    'width': 240,
-          |    'height': 50,
-          |    'longtitle': true,
-          |    'theme': 'dark',
-          |    'onsuccess': onSuccess,
-          |    'onfailure': onFailure
-          |  });
-          |}
-          |""".stripMargin),
-      script(src:=s"${gauth.platformJs}?onload=renderButton"),
+      script(src:="https://apis.google.com/js/api:client.js"),
       script(tpe:="text/javascript", src:=s"/$jsBundle"),
-      script(raw("initExample();"))
+      script(raw(s"initExample('$domId', '${gauth.clientId}');"))
     )
   )
 }
