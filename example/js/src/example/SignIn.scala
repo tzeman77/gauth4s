@@ -1,8 +1,10 @@
 package example
 
-import cz.functionals.gauth4s.{ClientConfig, gApi, gAuth2}
+import cz.functionals.gauth4s.{ClientConfig, GoogleAuth, gApi, gAuth2}
 import org.scalajs.dom
+import org.scalajs.dom.Event
 import org.scalajs.dom.ext.Ajax
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 import scalatags.JsDom.all._
@@ -10,8 +12,7 @@ import scalatags.JsDom.all._
 object SignIn extends Urls {
 
   def initGoogleAuth(root: dom.Element, clientId: String): Unit = {
-    gApi.load("auth2", () => {
-      val auth2 = gAuth2.init(new ClientConfig(client_id = clientId))
+    GoogleAuth.initHelper(clientId) foreach { auth2 =>
       val btn = span(img(src:=s"$RESOURCES/google.png")).render
       val result = div().render
       root.appendChild(div(div(
@@ -19,6 +20,7 @@ object SignIn extends Urls {
         btn), hr, result).render)
       auth2.attachClickHandler(btn,
         onSuccess = u => {
+          btn.style.display = display.none.v
 
           result.appendChild(pre(s"""User:
              |id: ${u.getId()}
@@ -50,13 +52,20 @@ object SignIn extends Urls {
           Ajax.post(VERIFY, data = aur.id_token,
             headers = Map("Content-Type" -> "text/plain")) onComplete {
             case Success(r) => result.appendChild(pre(
-                s"Server-side authentication: ${r.responseText}").render)
+              s"Server-side authentication: ${r.responseText}").render)
+              val logout = button("Logout").render
+              logout.addEventListener("click", (e: Event) => {
+                auth2.disconnect().toFuture.foreach(_ => {
+                  dom.window.location.reload(flag = true)
+                })
+              })
+              result.appendChild(logout)
             case Failure(e) => dom.window.alert(e.toString)
           }
         },
         onFailure = e => dom.window.alert(e.toString)
       )
-    })
+    }
   }
 
 }

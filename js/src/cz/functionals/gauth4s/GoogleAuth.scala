@@ -17,7 +17,9 @@ package cz.functionals.gauth4s
 
 import org.scalajs.dom
 
+import scala.concurrent.Future
 import scala.scalajs.js
+import scala.scalajs.js.{Promise, Thenable}
 
 // https://developers.google.com/identity/sign-in/web/reference#authentication
 
@@ -30,4 +32,22 @@ trait GoogleAuth extends js.Object {
     onFailure: js.Function1[js.Dynamic, Unit]
   ): Unit = js.native
 
+  def `then`[T](onInit: js.Function1[GoogleAuth, T],
+    onError: js.Function1[js.Object, Unit]): Promise[T] = js.native
+
+  def signOut(): Promise[Unit] = js.native
+
+  def disconnect(): Promise[Unit] = js.native
+}
+
+object GoogleAuth {
+  def initHelper(clientId: String): Future[GoogleAuth] = {
+    val p = scala.concurrent.Promise[GoogleAuth]()
+    gApi.load("auth2", () => {
+      val auth2 = gAuth2.init(new ClientConfig(client_id = clientId))
+      auth2.`then`(v => p.success(v),
+        e => p.failure(new RuntimeException(e.toString)))
+    })
+    p.future
+  }
 }
