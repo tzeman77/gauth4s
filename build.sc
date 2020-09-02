@@ -102,7 +102,13 @@ class JvmModule(val crossScalaVersion: String) extends Common {
   override def ivyDeps: Target[Loose.Agg[Dep]] = Agg(D.googleApiClient)
 }
 
-class JsModule(val crossScalaVersion: String) extends CommonJs
+class JsModule(val crossScalaVersion: String) extends CommonJs {
+  override def ivyDeps: Target[Loose.Agg[Dep]] = Agg(D.scalaJsDom)
+
+  override def scalacOptions: Target[Seq[String]] = T {
+    super.scalacOptions.map(_ ++ Seq("-P:scalajs:sjsDefinedByDefault"))
+  }
+}
 
 object jvm extends Cross[JvmModule](V.scala212)
 object js extends Cross[JsModule](V.scala212)
@@ -167,9 +173,7 @@ object example extends Module {
       millSourcePath / 'shared
     )
     override def moduleDeps = Seq(build.js(V.scala212))
-    override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps ++ Agg(
-      D.scalaJsDom
-    )
+    override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps
     override def scalacOptions: Target[Seq[String]] = T {
       super.scalacOptions.map(_ ++ Seq("-P:scalajs:sjsDefinedByDefault"))
     }
