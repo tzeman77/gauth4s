@@ -14,7 +14,7 @@ object Index extends config with Urls {
   }
 
   val domId = "main"
-  val resultId = "result";
+  val resultId = "result"
 
   def render: String = "<!DOCTYPE html>" + html(
     all.head(
