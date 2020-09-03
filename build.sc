@@ -12,7 +12,6 @@
 import mill._
 import mill.api.Loose
 import mill.define.{Command, Sources, Target}
-import mill.modules.Jvm
 import mill.scalajslib._
 import mill.scalalib._
 import mill.scalalib.publish._
@@ -77,19 +76,13 @@ trait Common extends CrossScalaModule with PublishModule {
     "-unchecked",                        // Enable additional warnings where generated code depends on assumptions.
     "-Xcheckinit",                       // Wrap field accessors to throw an exception on uninitialized access.
     "-Xfuture",                          // Turn on future language features.
-    "-target:jvm-1.8",
+    "-target:jvm-1.8"
   )}
 
   override def sources: Sources = T.sources(
     millSourcePath / 'src,
     millSourcePath / 'shared
   )
-
-  /*
-  protected def commonDeps = Agg()
-
-  override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps
-  */
 
 }
 
