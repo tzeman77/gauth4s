@@ -1,4 +1,19 @@
 /*
+ * Copyright 2020 Tomas Zeman <tomas@functionals.cz>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*
  * REPL:
  *
  * ./mill --repl -w
@@ -52,15 +67,15 @@ trait Common extends CrossScalaModule with PublishModule {
 
   override def publishVersion: Target[String] = V.app
 
-  override def pomSettings = PomSettings(
+  override def pomSettings: T[PomSettings] = PomSettings(
     description = "Scala wrapper for Google Sign-In",
     organization = "cz.functionals",
-    url = "",
+    url = "https://fossil.functionals.cz/gauth4s",
     licenses = Seq(License.`Apache-2.0`),
     versionControl = VersionControl(developerConnection = Some(
-      "ssh://tzeman@hg.functionals.cz/repos/public/gauth4s.fossil")),
+      "ssh://tzeman@fossil.functionals.cz/repos/public/gauth4s.fossil")),
     developers = Seq(
-      Developer("tzeman", "Tomas Zeman", "")
+      Developer("tzeman", "Tomas Zeman", "https://functionals.cz")
     )
   )
 
@@ -128,7 +143,7 @@ object example extends Module {
   )
 
   object jvm extends ScalaModule {
-    def scalaVersion = V.scala212
+    override def scalaVersion: T[String] = V.scala212
     override def sources: Sources = T.sources(
       millSourcePath / 'src,
       millSourcePath / 'shared
@@ -159,8 +174,8 @@ object example extends Module {
   }
 
   object js extends ScalaJSModule {
-    def scalaVersion = V.scala212
-    def scalaJSVersion = V.scalaJs
+    override def scalaVersion: T[String] = V.scala212
+    override def scalaJSVersion: T[String] = V.scalaJs
     override def sources: Sources = T.sources(
       millSourcePath / 'src,
       millSourcePath / 'shared
