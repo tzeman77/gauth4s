@@ -7,3 +7,4 @@ tags
 out
 .idea_modules
 example/jvm/resources/application.conf
+.direnv
