@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Tomas Zeman <tomas@functionals.cz>
+ * Copyright 2020-2021 Tomas Zeman <tomas@functionals.cz>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import java.util.Collections
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.client.googleapis.util.Utils
 import cz.functionals.gauth4s.GoogleAuthVerifier.{Err, VerificationFailed}
 
 import scala.collection.JavaConverters._
@@ -64,7 +64,7 @@ object GoogleAuthVerifier {
   def apply(clientId: String): GoogleAuthVerifier = new GoogleAuthVerifier(
     new GoogleIdTokenVerifier.Builder(
       GoogleNetHttpTransport.newTrustedTransport(),
-      JacksonFactory.getDefaultInstance)
+      Utils.getDefaultJsonFactory)
       .setAudience(Collections.singletonList(clientId))
       .build())
 }

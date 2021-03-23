@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Tomas Zeman <tomas@functionals.cz>
+ * Copyright 2020-2021 Tomas Zeman <tomas@functionals.cz>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,28 +33,27 @@ import mill.scalalib.publish._
 
 object V {
   val app = "0.2-SNAPSHOT"
-  val scalaJs = "0.6.33"
+  val scalaJs = "1.5.0"
   val scala212 = "2.12.12"
-
+  val scala213 = "2.13.5"
 }
 
 object D {
 
-  val autowire = ivy"com.lihaoyi::autowire::0.2.6"
+  val autowire = ivy"com.lihaoyi::autowire::0.3.3"
   val boopickle = ivy"io.suzaku::boopickle::1.3.3"
-  val configAnnotation = ivy"com.wacai::config-annotation:0.3.7"
-  val googleApiClient = ivy"com.google.api-client:google-api-client:1.30.10"
-  val macroParadise = ivy"org.scalamacros:::paradise:2.1.1"
-  val scalaJsDom = ivy"org.scala-js::scalajs-dom::1.0.0"
-  val scalatags = ivy"com.lihaoyi::scalatags::0.9.1"
+  val configAnnotation = ivy"com.wacai::config-annotation:0.4.1"
+  val googleApiClient = ivy"com.google.api-client:google-api-client:1.31.3"
+  val scalaJsDom = ivy"org.scala-js::scalajs-dom::1.1.0"
+  val scalatags = ivy"com.lihaoyi::scalatags::0.9.3"
 
   object akka {
-    val http = ivy"com.typesafe.akka::akka-http:10.1.12"
-    val stream = ivy"com.typesafe.akka::akka-stream:2.6.8"
+    val http = ivy"com.typesafe.akka::akka-http:10.2.4"
+    val stream = ivy"com.typesafe.akka::akka-stream:2.6.13"
   }
 
   object udash {
-    val ver = "0.8.5"
+    val ver = "0.9.0-M8"
     val core = ivy"io.udash::udash-core::$ver"
   }
 
@@ -90,7 +89,6 @@ trait Common extends CrossScalaModule with PublishModule {
     "-language:postfixOps",
     "-unchecked",                        // Enable additional warnings where generated code depends on assumptions.
     "-Xcheckinit",                       // Wrap field accessors to throw an exception on uninitialized access.
-    "-Xfuture",                          // Turn on future language features.
     "-target:jvm-1.8"
   )}
 
@@ -112,24 +110,24 @@ class JvmModule(val crossScalaVersion: String) extends Common {
 
 class JsModule(val crossScalaVersion: String) extends CommonJs {
   override def ivyDeps: Target[Loose.Agg[Dep]] = Agg(D.scalaJsDom)
-
-  override def scalacOptions: Target[Seq[String]] = T {
-    super.scalacOptions.map(_ ++ Seq("-P:scalajs:sjsDefinedByDefault"))
-  }
 }
 
-object jvm extends Cross[JvmModule](V.scala212)
-object js extends Cross[JsModule](V.scala212)
+object jvm extends Cross[JvmModule](V.scala212, V.scala213)
+object js extends Cross[JsModule](V.scala212, V.scala213)
 
 def publishLocal(): Command[Unit] = T.command{
   jvm(V.scala212).publishLocal()()
   js(V.scala212).publishLocal()()
+  jvm(V.scala213).publishLocal()()
+  js(V.scala213).publishLocal()()
   ()
 }
 
 def publishM2Local(p: os.Path): Command[Unit] = T.command{
   jvm(V.scala212).publishM2Local(p.toString)()
   js(V.scala212).publishM2Local(p.toString)()
+  jvm(V.scala213).publishM2Local(p.toString)()
+  js(V.scala213).publishM2Local(p.toString)()
   ()
 }
 
@@ -143,7 +141,7 @@ object example extends Module {
   )
 
   object jvm extends ScalaModule {
-    override def scalaVersion: T[String] = V.scala212
+    override def scalaVersion: T[String] = V.scala213
     override def sources: Sources = T.sources(
       millSourcePath / 'src,
       millSourcePath / 'shared
@@ -153,10 +151,10 @@ object example extends Module {
       D.akka.http,
       D.akka.stream
     )
-    override def moduleDeps = Seq(build.jvm(V.scala212))
-    override def scalacPluginIvyDeps = Agg(D.macroParadise)
+    override def moduleDeps = Seq(build.jvm(V.scala213))
     override def scalacOptions = T {
-      super.scalacOptions.map(_ :+
+      super.scalacOptions() ++ Seq(
+        "-Ymacro-annotations",
         s"-Xmacro-settings:conf.output.dir=${millSourcePath / 'resources}"
       )
     }
@@ -174,17 +172,14 @@ object example extends Module {
   }
 
   object js extends ScalaJSModule {
-    override def scalaVersion: T[String] = V.scala212
+    override def scalaVersion: T[String] = V.scala213
     override def scalaJSVersion: T[String] = V.scalaJs
     override def sources: Sources = T.sources(
       millSourcePath / 'src,
       millSourcePath / 'shared
     )
-    override def moduleDeps = Seq(build.js(V.scala212))
+    override def moduleDeps = Seq(build.js(V.scala213))
     override def ivyDeps: Target[Loose.Agg[Dep]] = commonDeps
-    override def scalacOptions: Target[Seq[String]] = T {
-      super.scalacOptions.map(_ ++ Seq("-P:scalajs:sjsDefinedByDefault"))
-    }
   }
 }
 

@@ -15,10 +15,8 @@ object ExampleApp extends App with Server with config with Urls {
     getFromResourceDirectory("public")
   }
 
-  Http().bindAndHandle(
-      assets ~ resources ~
-        Verifier.route ~
-        Index.route
-  , server.interface, server.port)
+  Http().newServerAt(server.interface, server.port).bind(
+    assets ~ resources ~ Verifier.route ~ Index.route
+  )
 
 }
