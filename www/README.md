@@ -1,11 +1,11 @@
 
 Implementation of Scala wrapper over Sign-In for web sites:
-<https://developers.google.com/identity/sign-in/web/sign-in>
+<https://developers.google.com/identity/gsi/web>
 
 ## Configuration: ##
 
-1. Follow the instruction to create authorization credentials: <https://developers.google.com/identity/sign-in/web/sign-in#create_authorization_credentials>
-2. Put the client ID into `example/jvm/resources/application.conf` (never commit this conf file; it is ignored by default):
+1. Follow the instruction to create authorization credentials: <https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid>
+2. Put the client ID into `example/resources/application.conf` (never commit this conf file; it is ignored by default):
 
 ```
 config.gauth.clientId = ...
@@ -18,7 +18,7 @@ Development/interactive build/REPL:
 ```
 ./mill --repl -w
 
-example.jvm.runBackground()()
+example.runBackground()()
 
 ```
 
