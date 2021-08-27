@@ -58,6 +58,10 @@ class GoogleAuthVerifier(verifier: GoogleIdTokenVerifier) {
 }
 
 object GoogleAuthVerifier {
+
+  val CREDENTIAL = "credential"
+  val G_CSRF_TOKEN = "g_csrf_token"
+
   sealed trait Err
   case object VerificationFailed extends Err
 

@@ -4,7 +4,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import scalatags.Text.all._
-import scalatags.Text.{all, tags2}
+import scalatags.Text.{all, tags2, attrs}
 
 object Index extends config with Urls {
 
@@ -24,10 +24,13 @@ object Index extends config with Urls {
     ),
     body(margin:="5em",
       h1("Google authentication example"),
-      div(id:=domId),
-      script(src:="https://apis.google.com/js/api:client.js"),
-      script(tpe:="text/javascript", src:=s"/$jsBundle"),
-      script(raw(s"initExample('$domId', '${gauth.clientId}');"))
+      script(src:="https://accounts.google.com/gsi/client"),
+      div(id:="g_id_onload",
+        attrs.data("client_id"):=gauth.clientId,
+        attrs.data("ux_mode"):="redirect",
+        attrs.data("login_uri"):=
+          s"http://${server.interface}:${server.port}/$VERIFY"),
+      div(cls:="g_id_signin", attrs.data("type"):="standard")
     )
   )
 }

@@ -6,5 +6,5 @@ tags
 .idea
 out
 .idea_modules
-example/jvm/resources/application.conf
+example/resources/application.conf
 .direnv
