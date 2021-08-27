@@ -26,7 +26,7 @@
 
 import mill._
 import mill.api.Loose
-import mill.define.{Command, Sources, Target}
+import mill.define.{Command, Target}
 import mill.scalalib._
 import mill.scalalib.publish._
 
@@ -81,11 +81,6 @@ trait Common extends CrossScalaModule with PublishModule {
     "-Xcheckinit",                       // Wrap field accessors to throw an exception on uninitialized access.
     "-target:jvm-1.8"
   )}
-
-  override def sources: Sources = T.sources(
-    millSourcePath / 'src,
-    millSourcePath / 'shared
-  )
 
 }
 
