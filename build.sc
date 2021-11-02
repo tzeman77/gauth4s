@@ -31,7 +31,7 @@ import mill.scalalib._
 import mill.scalalib.publish._
 
 object V {
-  val app = "0.3-SNAPSHOT"
+  val app = "0.3"
   val scala212 = "2.12.14"
   val scala213 = "2.13.6"
 }
